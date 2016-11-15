@@ -13,8 +13,9 @@ PRIMO = 'primo.nli.org.il'
 PAGED_CYPHER = "{} skip {} limit {}"
 
 class N4JQuery:
-    def __init__(self, cypher_query, page_size=200):
+    def __init__(self, cypher_query, page_size=200, offset=0):
         self.count = page_size
+        self.offset = offset
         self.cypher = cypher_query
         self.index = 0
         self.page = 1
@@ -52,7 +53,7 @@ class N4JQuery:
         while True:
             try:
                 skip = self.count * (self.page - 1)
-                query = PAGED_CYPHER.format(self.cypher, skip, self.count)
+                query = PAGED_CYPHER.format(self.cypher, self.offset + skip, self.count)
                 print(query)
                 res = self.graph.cypher.execute(query)
             except:
