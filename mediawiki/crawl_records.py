@@ -4,12 +4,10 @@ import traceback
 
 sys.path.append(os.path.join(os.getcwd(), '..'))
 
-from app.pages import create_page_from_dictionary
-from app.personality import create_page_from_node
+from mediawiki.pages import create_page_from_dictionary
 import py2neo
 import mwclient
 from app.settings import *
-import json
 
 py2neo.authenticate(NEO4J_URL, NEO4J_USER, NEO4J_PASSWORD)
 graph = py2neo.Graph('http://' + NEO4J_URL + NEO4J_GRAPH)
