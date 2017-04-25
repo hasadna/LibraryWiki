@@ -3,8 +3,8 @@ import sys
 
 sys.path.append(os.path.join(os.getcwd(), '..'))
 
-from app.pages import CR, BR, simple_person_name, date8_to_heb_date
-from app.wiki import create_wiki_page, create_redirect_wiki_page
+from mediawiki.pages import CR, BR, simple_person_name, date8_to_heb_date
+from mediawiki.wiki import create_wiki_page
 from app.utils import generate_thumb_link, extract_link
 from app.__init__ import *
 import json

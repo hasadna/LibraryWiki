@@ -5,8 +5,7 @@ import traceback
 sys.path.append(os.path.join(os.getcwd(), '..'))
 
 from app.settings import *
-from app.pages import create_page_from_dictionary
-from app.personality import create_page_from_node
+from mediawiki.personality import create_page_from_node
 from app.entity_iterators import N4JQuery
 import mwclient
 import py2neo

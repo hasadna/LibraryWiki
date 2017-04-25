@@ -1,8 +1,8 @@
-from app.wiki import create_wiki_page, create_redirect_wiki_page
-from app.utils import generate_thumb_link
-from app.__init__ import *
 import re
 
+from app.__init__ import *
+from app.utils import generate_thumb_link
+from mediawiki.wiki import create_wiki_page, create_redirect_wiki_page
 
 CR = "\n"
 BR = "<br/>" + CR
@@ -135,6 +135,11 @@ def trim(line):
 
 
 def handle_categories(browse, create_category_pages):
+    """
+    :param browse: list of names of categories with the category ID in the DB
+    :param create_category_pages: whether the algorithm should create category pages when encountered
+    :return:
+    """
     subjects = {}
     if browse.get('subject'):
         subjects = str_to_list(browse['subject'])
