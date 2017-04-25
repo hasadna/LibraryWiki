@@ -21,9 +21,12 @@ def create_edge(parent_node, child_node):
         graph.create_unique(py2neo.Relationship(parent_node, "parent_of", child_node))
         push = True
 
-# iterate over all primary locations with hebrew name
-# TODO: not only Locations
-for authority_index, authority_node in enumerate(N4JQuery('match (n:Location {primary:true}) where exists(n.location_name_heb) return n as node, labels(n) as labels')):
+# iterate over all primary authorities with hebrew name
+# TODO: allow non hebrew names (english, arabic, other?)
+QUERY='match (n:Authority {primary:true})\
+ where (exists(n.location_name_heb) or exists(n.person_name_heb) or exists(n.topic_name_heb))\
+ return n as node, labels(n) as labels'
+for authority_index, authority_node in enumerate(N4JQuery(QUERY)):
     primary_id = authority_node.node['id']
     node_type = authority_node.labels[-1] # first label is Authority, second (last) is the actual type (Location/Person/...)
     if (node_type == "Authority"):
@@ -68,7 +71,7 @@ for authority_index, authority_node in enumerate(N4JQuery('match (n:Location {pr
                     subs_copy[sub_type_name] = ""
                     parent_key = keys(subs_copy)
                     parent_id = primary_id if parent_key == "|||" else sub_sub.get(parent_key)
-                    # None means no parent excists. We need to create it as a "fake" node in neo4j
+                    # None means no parent exists. We need to create it as a "fake" node in neo4j
                     print("{} is parent of {}".format(parent_id, id))
                     # TODO create parent node if it doesn't exist
                     create_edge(id_to_node.get(parent_id), id_to_node.get(id))
