@@ -9,13 +9,15 @@ from app.settings import DUMP_PATH
 import py2neo
 from app.settings import *
 
-PRIMO = 'primo.nli.org.il'
+# PRIMO = 'primo.nli.org.il'
+PRIMO = '178.62.194.73'
 PAGED_CYPHER = "{} skip {} limit {}"
 
 class N4JQuery:
-    def __init__(self, cypher_query, page_size=200, offset=0):
+    def __init__(self, cypher_query, page_size=200, offset=0, limit=0):
         self.count = page_size
         self.offset = offset
+        self.limit = limit
         self.cypher = cypher_query
         self.index = 0
         self.page = 1
@@ -121,6 +123,7 @@ class Results:
         while True:
             try:
                 url = self._search_url.format(self.query, 1 + (self.page - 1) * self.count, self.count)
+                print(url)
                 res = get(url)
                 sleep(4)
             except Exception as ex:
@@ -163,7 +166,7 @@ class Portraits(Photos):
     @property
     def _search_url(self):
         return 'http://' + PRIMO + '/PrimoWebServices/xservice/search/brief?institution=NNL' \
-               '&loc=local,scope:(NNL01_Schwad)&query=facet_topic,exact,"{} Y M–Portraits"&sortField=&indx={}' \
+               '&loc=local,scope:(NNL01_Schwad)&query=facet_topic,exact,"{}"&sortField=&indx={}' \
                '&bulkSize={}&json=true'
 
     @property

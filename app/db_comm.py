@@ -43,8 +43,12 @@ def set_entities(entities):
 def set_portraits():
     # people = graph.cypher.execute(
     # "match (n:Person) where n.id = '000121498' return n as node")
-    for i, person in enumerate(N4JQuery("match (n:Person) where exists(n.person_name_absolute) return n as node")):
-        authority_portrait(person)
+    for i, person in enumerate(N4JQuery('match (n:Person {id:"000017959"}) where exists(n.person_name_absolute) return n as node', page_size=4, offset=0)):
+        try:
+            authority_portrait(person)
+        except Exception as e:
+            print(e, flush=True)
+            traceback.print_exc(file=sys.stdout)
 
 
 def authority_portrait(authority):
@@ -52,6 +56,7 @@ def authority_portrait(authority):
     print("Portrait {} : {}".format(authority.node.properties["id"], query), flush=True)
     portraits = Portraits(query)
     for portrait in portraits:
+        print(portrait)
         portrait_node = create_entity(portrait)
         graph.create_unique(py2neo.Relationship(authority.node, "subject_of", portrait_node))
         graph.create_unique(py2neo.Relationship(authority.node, "portrait_of", portrait_node))
@@ -61,8 +66,11 @@ def set_photos():
     # people = graph.cypher.execute(
     # "match (n:Person) where n.id = '000121498' return n as node")
     for i, person in enumerate(N4JQuery("match (n:Person) where exists(n.person_name_heb) return n as node")):
-        authority_photos(person)
-
+        try:
+            authority_photos(person)
+        except Exception as e:
+            print(e, flush=True)
+            traceback.print_exc(file=sys.stdout)
 
 def authority_photos(authority):
     query = authority.node.properties["person_name_heb"]
@@ -121,10 +129,10 @@ def extract_authority(relationship, authorities):
     return authorities.get(relationship) and {find_id(authority).group()[6:-2] for authority in
                                               authorities[relationship] if find_id(authority)}
 
-set_entities(get_authorities(from_id=0))
-set_entities(Results('NNL_ALEPH'))
-print("Done getting records", flush=True)
-create_records_authorities_relationships()
+# set_entities(get_authorities(from_id=0))
+# set_entities(Results('NNL_ALEPH'))
+# print("Done getting records", flush=True)
+# create_records_authorities_relationships()
 set_portraits()
 set_photos()
 graph.match()
